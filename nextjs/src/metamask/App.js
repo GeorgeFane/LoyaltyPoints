@@ -1,17 +1,23 @@
-import { useEffect } from 'react'
-import { Button } from '@mui/material'
+import React, { useEffect } from 'react'
+import { Button, Collapse, Alert, IconButton } from '@mui/material'
+import { CloseIcon } from '@mui/icons-material'
+
 import useMetaMask from './hooks/metamask';
+import TransitionAlerts from './TransitionAlerts';
 
 function App() {
   
   const { connect, disconnect, isActive, account, shouldDisable } = useMetaMask()
+  const [open, setOpen] = React.useState(false);
 
   const handleClick = () => {
     if (isActive) {
       disconnect();
+      setOpen(false);
     }
     else {
       connect();
+      setOpen(true);
     }
   }
 
@@ -35,6 +41,11 @@ function App() {
         <div className="mt-2 mb-2">
           { text }
         </div>
+        
+        <TransitionAlerts
+          open={open}
+          setOpen={setOpen}
+        />
       </header>
     </div>
   );
