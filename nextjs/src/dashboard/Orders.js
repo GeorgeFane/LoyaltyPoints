@@ -16,10 +16,10 @@ function preventDefault(event) {
   event.preventDefault();
 }
 
-export default function Orders() {
+export default function Orders({ pointsRows }) {
   const rows = [
-    createData('LeetCode', 2),
-    createData('LeetCode', 2),
+    createData('Example Site with Loyalty Program', pointsRows[0]),
+    createData('Loyalty Dashboard', pointsRows[1]),
   ]
   return (
     <React.Fragment>
@@ -35,7 +35,7 @@ export default function Orders() {
           {rows.map((row) => (
             <TableRow key={row.id}>
               <TableCell>{row.name}</TableCell>
-              <TableCell align="right">{`$${row.amount}`}</TableCell>
+              <TableCell align="right">{row.amount}</TableCell>
             </TableRow>
           ))}
         </TableBody>

@@ -15,6 +15,10 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import ConnectButton from '../metamask/index'
 
+import abi from '../contract/abi.json'
+import address from '../contract/address.json'
+import Web3 from 'web3'
+
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -39,6 +43,33 @@ export default function SignInSide() {
       password: data.get('password'),
     });
   };
+
+  const [ active, setActive ] = React.useState()
+  const [ total, setTotal ] = React.useState()
+  console.log(active)
+
+  const get_net_id = async () => {
+    if (Web3.givenProvider === null) {
+        return;
+    }
+
+    console.log('hi')
+    const web3 = new Web3(Web3.givenProvider);
+    const contract_ = new web3.eth.Contract(abi, address?.address);
+    const myAddress = '0xc59E499d8E789986A08547ae5294D14C5dd91D9f';
+    const balance0 = await contract_.methods.balances(0, myAddress).call()
+    console.log(balance0)
+    setTotal(balance0)
+
+    if (active) {
+      console.log('mint')
+      contract_.methods.issuePoints(0, myAddress, 1).send({ from: myAddress })
+    }
+  }
+
+  React.useEffect(() => {
+    get_net_id()
+  }, [active])
 
   return (
     <ThemeProvider theme={theme}>
@@ -108,7 +139,9 @@ export default function SignInSide() {
                 Sign In
               </Button>
 
-              <ConnectButton />
+              <ConnectButton
+                setActive={setActive}
+              />
 
               <Grid container>
                 <Grid item xs>

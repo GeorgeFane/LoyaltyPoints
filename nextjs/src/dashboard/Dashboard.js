@@ -101,6 +101,7 @@ function DashboardContent() {
   console.log('dasbhoard active', active)
 
   const [ total, setTotal ] = React.useState('Loading')
+  console.log(total)
 
   const { isActive, account } = useMetaMask()
 
@@ -119,11 +120,17 @@ function DashboardContent() {
     const myAddress = '0xc59E499d8E789986A08547ae5294D14C5dd91D9f';
     const balance0 = await contract_.methods.balances(0, myAddress).call()
     const balance1 = await contract_.methods.balances(1, myAddress).call()
+    setPointsRows([balance0, balance1])
+
     const total_ = Number(balance0) + Number(balance1)
     console.log('dashboard total', total_)
     setTotal(total_)
+
     if (!active) {
       setTotal('Not Logged In')
+    }
+    else {
+      // contract.methods.issuePoints(1, myAddress, 1).send({ from: myAddress })
     }
 
     setContract(contract_);
@@ -131,7 +138,7 @@ function DashboardContent() {
 
   React.useEffect(() => {
     get_net_id()
-  }, [active])
+  }, [total, active])
 
   if (!active) {
     return (
@@ -301,7 +308,9 @@ function DashboardContent() {
               {/* Recent Orders */}
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  <Orders />
+                  <Orders
+                    pointsRows={pointsRows}
+                  />
                 </Paper>
               </Grid>
             </Grid>
