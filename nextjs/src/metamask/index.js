@@ -10,12 +10,13 @@ function getLibrary(provider, connector) {
   return new Web3(provider)
 }
 
-export default function Index({ alert = 1 }) {
+export default function Index({ alert = 1, setActive }) {
   return (
     <Web3ReactProvider getLibrary={getLibrary}>
       <MetaMaskProvider>
         <App
           alert={alert}
+          setActive={setActive}
         />
       </MetaMaskProvider>
     </Web3ReactProvider>

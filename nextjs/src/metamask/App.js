@@ -6,21 +6,21 @@ import { useWeb3React } from '@web3-react/core';
 import useMetaMask from './hooks/metamask';
 import TransitionAlerts from './TransitionAlerts';
 
-function App({ alert }) {
+function App({ alert, setActive }) {
   
   const { connect, disconnect, isActive, account, shouldDisable } = useMetaMask()
   const { active } = useWeb3React()
   const [open, setOpen] = React.useState(false);
 
-  console.log('isActive', isActive, active)
-
   const handleClick = () => {
     if (isActive) {
       disconnect();
       setOpen(false);
+      setActive(false)
     }
     else {
       connect();
+      setActive(true)
       if (alert) {
         setOpen(true);
       }

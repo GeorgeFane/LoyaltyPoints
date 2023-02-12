@@ -27,6 +27,9 @@ import abi from '../contract/abi.json'
 import address from '../contract/address.json'
 import Web3 from 'web3'
 
+import useMetaMask from '../metamask/hooks/metamask'
+import { useWeb3React } from '@web3-react/core';
+
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -94,7 +97,14 @@ function DashboardContent() {
   const toggleDrawer = () => {
     setOpen(!open);
   };
+  const [active, setActive] = React.useState(false)
+  console.log('dasbhoard active', active)
 
+  const [ total, setTotal ] = React.useState('Loading')
+
+  const { isActive, account } = useMetaMask()
+
+  const [pointsRows, setPointsRows] = React.useState([])
 
   const get_net_id = async () => {
     if (Web3.givenProvider === null) {
@@ -105,17 +115,87 @@ function DashboardContent() {
     const web3 = new Web3(Web3.givenProvider);
     const contract_ = new web3.eth.Contract(abi, address?.address);
 
-    console.log(active)
+    console.log('account', isActive, account)
     const myAddress = '0xc59E499d8E789986A08547ae5294D14C5dd91D9f';
-    const balance = await contract_.methods.balances(0, myAddress).call()
-    console.log(balance)
+    const balance0 = await contract_.methods.balances(0, myAddress).call()
+    const balance1 = await contract_.methods.balances(1, myAddress).call()
+    const total_ = Number(balance0) + Number(balance1)
+    console.log('dashboard total', total_)
+    setTotal(total_)
+    if (!active) {
+      setTotal('Not Logged In')
+    }
 
     setContract(contract_);
-}
+  }
 
   React.useEffect(() => {
-    // get_net_id()
-  }, [])
+    get_net_id()
+  }, [active])
+
+  if (!active) {
+    return (
+      <ThemeProvider theme={mdTheme}>
+        <Box sx={{ display: 'flex' }}>
+          <CssBaseline />
+          <AppBar position="absolute" open={open}>
+            <Toolbar
+              sx={{
+                pr: '24px', // keep right padding when drawer closed
+              }}
+            >
+              <IconButton
+                edge="start"
+                color="inherit"
+                aria-label="open drawer"
+                onClick={toggleDrawer}
+                sx={{
+                  marginRight: '36px',
+                  ...(open && { display: 'none' }),
+                }}
+              >
+                <MenuIcon />
+              </IconButton>
+              <Typography
+                component="h1"
+                variant="h6"
+                color="inherit"
+                noWrap
+                sx={{ flexGrow: 1 }}
+              >
+                Loyalty Dashboard
+              </Typography>
+
+              <ConnectButton
+                alert={0}
+                setActive={setActive}
+              />
+            </Toolbar>
+          </AppBar>
+          <Drawer variant="permanent" open={open}>
+            <Toolbar
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'flex-end',
+                px: [1],
+              }}
+            >
+              <IconButton onClick={toggleDrawer}>
+                <ChevronLeftIcon />
+              </IconButton>
+            </Toolbar>
+            <Divider />
+            <List component="nav">
+              {mainListItems}
+              <Divider sx={{ my: 1 }} />
+              {secondaryListItems}
+            </List>
+          </Drawer>
+        </Box>
+      </ThemeProvider>
+    )
+  }
 
   return (
     <ThemeProvider theme={mdTheme}>
@@ -151,6 +231,7 @@ function DashboardContent() {
 
             <ConnectButton
               alert={0}
+              setActive={setActive}
             />
           </Toolbar>
         </AppBar>
@@ -212,7 +293,9 @@ function DashboardContent() {
                     height: 240,
                   }}
                 >
-                  <Deposits />
+                  <Deposits
+                    total={total}
+                  />
                 </Paper>
               </Grid>
               {/* Recent Orders */}
