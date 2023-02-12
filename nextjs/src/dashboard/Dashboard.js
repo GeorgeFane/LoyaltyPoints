@@ -22,6 +22,11 @@ import Chart from './Chart';
 import Deposits from './Deposits';
 import Orders from './Orders';
 
+import ConnectButton from '../metamask/index'
+import abi from '../contract/abi.json'
+import address from '../contract/address.json'
+import Web3 from 'web3'
+
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -85,9 +90,32 @@ const mdTheme = createTheme();
 
 function DashboardContent() {
   const [open, setOpen] = React.useState(true);
+  const [contract, setContract] = React.useState();
   const toggleDrawer = () => {
     setOpen(!open);
   };
+
+
+  const get_net_id = async () => {
+    if (Web3.givenProvider === null) {
+        return;
+    }
+
+    console.log('hi')
+    const web3 = new Web3(Web3.givenProvider);
+    const contract_ = new web3.eth.Contract(abi, address?.address);
+
+    console.log(active)
+    const myAddress = '0xc59E499d8E789986A08547ae5294D14C5dd91D9f';
+    const balance = await contract_.methods.balances(0, myAddress).call()
+    console.log(balance)
+
+    setContract(contract_);
+}
+
+  React.useEffect(() => {
+    // get_net_id()
+  }, [])
 
   return (
     <ThemeProvider theme={mdTheme}>
@@ -120,11 +148,10 @@ function DashboardContent() {
             >
               Dashboard
             </Typography>
-            <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
+
+            <ConnectButton
+              alert={0}
+            />
           </Toolbar>
         </AppBar>
         <Drawer variant="permanent" open={open}>

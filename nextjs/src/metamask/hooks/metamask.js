@@ -14,6 +14,7 @@ export const MetaMaskProvider = ({ children }) => {
 
     // Init Loading
     useEffect(() => {
+        return
         connect().then(val => {
             setIsLoading(false)
         })
