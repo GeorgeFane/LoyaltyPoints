@@ -10,12 +10,14 @@ Demo video: https://youtu.be/_1s-Fhqt2H0
 
 # Code Organization
 
-Example site with loyalty program at login.js, which displays src/login/login.js
+* Example site with loyalty program at login.js, which displays src/login/login.js
 
-* You get +1 loyalty point each time you sign in, mimicking LeetCode's gold for daily sign in.
+  * You get +1 loyalty point each time you sign in, mimicking LeetCode's gold for daily sign in.
 
-Loyalty points dashboard at pages/dashboard.js, which displays src/dashboard/Dashboard.js
+* Loyalty points dashboard at pages/dashboard.js, which displays src/dashboard/Dashboard.js
 
-* Can view all loyalty points across all companies associated with yourself
+  * Can view all loyalty points across all companies associated with yourself
 
-src/metamask/index.js exports a 'Login with MetaMask' button.
+* src/metamask/index.js exports a 'Login with MetaMask' button.
+
+* Contract at src/contract/contract.sol
